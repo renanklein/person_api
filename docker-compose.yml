@@ -1,0 +1,11 @@
+version: "3.4"
+services:
+  db:
+    image: "postgres:latest"
+    container_name: "person_api_db"
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=localpass
+      - POSTGRES_USER=localusr
+      - POSTGRES_DB=person
