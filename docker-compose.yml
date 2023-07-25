@@ -2,6 +2,7 @@ version: "3.4"
 services:
   db:
     image: "postgres:latest"
+    restart: always
     container_name: "person_api_db"
     ports:
       - 5432:5432
@@ -9,3 +10,11 @@ services:
       - POSTGRES_PASSWORD=localpass
       - POSTGRES_USER=localusr
       - POSTGRES_DB=person
+  app:
+    build:
+      context: .
+    container_name: "person_api"
+    ports:
+      - 3000:3000
+    depends_on:
+      - db

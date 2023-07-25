@@ -1,7 +1,7 @@
 # Builder phase
 
 FROM rust:latest AS builder
-RUN USER= root cargo new --bin person_api
+RUN USER=root cargo new --bin person_api
 WORKDIR ./person_api
 COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build --release
@@ -31,7 +31,7 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from =builder /person_api/target/release/person_api ${APP}/person_api
+COPY --from=builder /person_api/target/release/person_api ${APP}/person_api
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
