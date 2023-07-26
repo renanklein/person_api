@@ -1,6 +1,6 @@
 -- Your SQL goes here
 CREATE TABLE person (
-    id SERIAL NOT NULL,
+    id SERIAL PRIMARY KEY NOT NULL,
     name VARCHAR NOT NULL,
     age INTEGER NOT NULL,
     address_id INTEGER NOT NULL,

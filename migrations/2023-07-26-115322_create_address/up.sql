@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE address(
+CREATE TABLE "address"(
     id SERIAL PRIMARY KEY NOT NULL,
     state VARCHAR NOT NULL,
     city VARCHAR NOT NULL,
