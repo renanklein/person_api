@@ -16,5 +16,7 @@ services:
     container_name: "person_api"
     ports:
       - 3000:3000
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost/${POSTGRES_DB}
     depends_on:
       - db

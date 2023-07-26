@@ -2,7 +2,7 @@ use diesel::{Queryable, Selectable, Insertable};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Queryable,Debug)]
-struct Address {
+pub struct Address {
     state: String,
     city: String,
     country: String,
@@ -15,21 +15,23 @@ struct Address {
 
 
 #[derive(Serialize, Deserialize, Debug)]
-enum DocumentType {
+pub enum DocumentType {
     CPF(String),
     RG(String)
 }
 
 
-#[derive(Serialize, Deserialize, Queryable,Debug)]
-struct Document {
+#[derive(Serialize, Deserialize, Queryable, Debug)]
+pub struct Document {
     document_type: DocumentType,
     doc_number: String
 }
 
 
 
-#[derive(Serialize, Deserialize,Debug)]
+#[derive(Serialize, Deserialize, Queryable)]
+#[diesel(table_name = crate::schema::person)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Person {
     id: String,
     name: String,
