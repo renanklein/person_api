@@ -1,4 +1,4 @@
-use diesel::{Queryable, Selectable, Insertable};
+use diesel::{Queryable, Selectable, Identifiable, Associations};
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Queryable,Debug)]
@@ -21,15 +21,18 @@ pub enum DocumentType {
 }
 
 
-#[derive(Serialize, Deserialize, Queryable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Debug)]
+#[diesel(belongs_to(Person))]
+#[diesel(table_name = crate::schema::document)]
 pub struct Document {
+    id: i32,
     document_type: DocumentType,
     doc_number: String
 }
 
 
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, Debug, PartialEq)]
 #[diesel(table_name = crate::schema::person)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Person {
