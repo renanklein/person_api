@@ -10,6 +10,7 @@ diesel::table! {
         neighborhood -> Nullable<Varchar>,
         complement -> Nullable<Varchar>,
         number -> Varchar,
+        person_id -> Int4,
     }
 }
 
@@ -18,6 +19,7 @@ diesel::table! {
         id -> Int4,
         doc_type -> Varchar,
         doc_number -> Varchar,
+        person_id -> Int4,
     }
 }
 
@@ -26,13 +28,11 @@ diesel::table! {
         id -> Int4,
         name -> Varchar,
         age -> Int4,
-        address_id -> Int4,
-        document_id -> Int4,
     }
 }
 
-diesel::joinable!(person -> address (address_id));
-diesel::joinable!(person -> document (document_id));
+diesel::joinable!(address -> person (person_id));
+diesel::joinable!(document -> person (person_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     address,

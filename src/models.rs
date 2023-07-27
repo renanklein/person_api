@@ -1,8 +1,11 @@
-use diesel::{Queryable, Selectable, Identifiable, Associations};
+use diesel::{Queryable, Identifiable, Associations, Selectable};
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Queryable,Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Debug)]
+#[diesel(belongs_to(Person))]
+#[diesel(table_name = crate::schema::address)]
 pub struct Address {
+    id: i32,
     state: String,
     city: String,
     country: String,
@@ -10,7 +13,8 @@ pub struct Address {
     neighborhood: String,
     complement: String,
     street: String,
-    number: String
+    number: String,
+    person_id: i32
 }
 
 
@@ -27,12 +31,13 @@ pub enum DocumentType {
 pub struct Document {
     id: i32,
     document_type: DocumentType,
-    doc_number: String
+    doc_number: String,
+    person_id: i32
 }
 
 
 
-#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable)]
 #[diesel(table_name = crate::schema::person)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Person {
