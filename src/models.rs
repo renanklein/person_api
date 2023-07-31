@@ -3,14 +3,13 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Insertable, Debug)]
 #[diesel(table_name = crate::schema::person)]
-
 pub struct NewPerson {
     name: String,
     age: i32
 }
 
 
-#[derive(Serialize, Deserialize, Insertable, Debug)]
+#[derive(Insertable, Debug)]
 #[diesel(table_name = crate::schema::address)]
 pub struct NewAddress {
     state: String,
@@ -32,7 +31,7 @@ pub struct NewDocument{
     person_id: i32
 }
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Debug)]
+#[derive(Queryable, Identifiable, Associations, Debug)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::address)]
 pub struct Address {
