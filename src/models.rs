@@ -31,7 +31,7 @@ pub struct NewDocument{
     person_id: i32
 }
 
-#[derive(Queryable, Identifiable, Associations, Debug)]
+#[derive(Queryable, Identifiable, Associations, Debug, PartialEq)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::address)]
 pub struct Address {
@@ -54,7 +54,7 @@ pub enum DocumentType {
 }
 
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Debug, PartialEq)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::document)]
 pub struct Document {
@@ -66,7 +66,7 @@ pub struct Document {
 
 
 
-#[derive(Serialize, Deserialize, Selectable)]
+#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, PartialEq)]
 #[diesel(table_name = crate::schema::person)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Person {
@@ -76,7 +76,27 @@ pub struct Person {
 }
 
 impl Person {
-   pub fn get(self) -> Person{
-       self 
+   pub fn get_id(&self) -> i32{
+       self.id
     } 
+}
+
+impl NewAddress {
+    pub fn get_person_id(&self) -> i32{
+        self.person_id
+    }
+
+    pub fn set_person_id(&mut self, new_id: &i32){
+        self.person_id = *new_id;
+    }
+}
+
+impl NewDocument {
+    pub fn get_person_id(&self) -> i32{
+        self.person_id
+    }
+
+    pub fn set_person_id(&mut self, new_id: &i32){
+        self.person_id = *new_id;
+    }
 }

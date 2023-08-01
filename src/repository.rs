@@ -1,10 +1,10 @@
 use std::env;
 
-use diesel::{connection, Connection, PgConnection, RunQueryDsl};
+use diesel::{connection, Connection, PgConnection, RunQueryDsl, QuerySource, QueryDsl};
 
 use crate::{
-    models::{NewAddress, NewDocument, NewPerson},
-    schema,
+    models::{NewAddress, NewDocument, NewPerson, Person, Address, Document},
+    schema::{self, person, address, document},
 };
 
 pub fn establish_connection() -> PgConnection {
@@ -39,18 +39,34 @@ fn insert_document(new_doc: NewDocument) {
         .expect("Error on inserting documents");
 }
 
-pub fn insert_person(new_person: NewPerson, new_address: NewAddress, new_doc: NewDocument) {
+pub fn insert_person(new_person: NewPerson, mut new_address: NewAddress, mut new_doc: NewDocument) {
     println!("Inserting new person {:?}", new_person);
 
     use crate::schema::person::dsl::*;
 
     let connection = &mut establish_connection();
 
-    diesel::insert_into(person)
+    let inserted_record =  diesel::insert_into(person)
         .values(&new_person)
-        .execute(connection)
+        .get_result::<Person>(connection)
         .expect("Error on inserting new person");
+
+    new_address.set_person_id(&inserted_record.get_id());
+    new_doc.set_person_id(&inserted_record.get_id());
 
     insert_address(new_address);
     insert_document(new_doc);
+}
+
+pub fn get_persons(){
+    println!("Getting all persons ...");
+
+    use crate::schema::person::dsl::*;
+
+    let connection = &mut establish_connection();
+
+    let results = person
+        .inner_join(address::table)
+        .inner_join(document::table)
+        .load::<(Person, Document, Address)>(connection);
 }
