@@ -1,6 +1,14 @@
 use diesel::{Queryable, Identifiable, Associations, Selectable, Insertable};
 use serde::{Serialize, Deserialize};
 
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CreatePerson {
+    pub person: NewPerson,
+    pub document: NewDocument,
+    pub address: NewAddress
+}
+
 #[derive(Serialize, Deserialize, Insertable, Debug)]
 #[diesel(table_name = crate::schema::person)]
 pub struct NewPerson {
@@ -9,21 +17,21 @@ pub struct NewPerson {
 }
 
 
-#[derive(Insertable, Debug)]
+#[derive(Serialize, Deserialize,Insertable, Debug, Clone)]
 #[diesel(table_name = crate::schema::address)]
 pub struct NewAddress {
     state: String,
     city: String,
     country: String,
     zip_code: String,
-    neighborhood: String,
-    complement: String,
+    neighborhood: Option<String>,
+    complement: Option<String>,
     number: String,
     person_id: i32
 }
 
 
-#[derive(Serialize, Deserialize, Insertable, Debug)]
+#[derive(Serialize, Deserialize, Insertable, Debug, Clone)]
 #[diesel(table_name = crate::schema::document)]
 pub struct NewDocument{
     doc_type: String,
@@ -31,7 +39,7 @@ pub struct NewDocument{
     person_id: i32
 }
 
-#[derive(Queryable, Identifiable, Associations, Debug, PartialEq)]
+#[derive(Queryable, Selectable,  Identifiable, Associations, Debug, PartialEq)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::address)]
 pub struct Address {
