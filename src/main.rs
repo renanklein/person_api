@@ -1,5 +1,5 @@
 use actix_web::{get, post, Responder, web::Json, HttpServer, App, HttpResponse};
-use person_api::{models::CreatePerson, repository::insert_person};
+use person_api::{models::CreatePerson, repository::{insert_person, get_persons}};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -16,6 +16,7 @@ async fn main() -> std::io::Result<()> {
 #[get("/persons")]
 async fn get_all_persons() -> impl Responder {
     // Get all entries from db using diesel
+    get_persons();
     Json("brah")
 }
 

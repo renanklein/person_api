@@ -17,6 +17,6 @@ services:
     ports:
       - 3000:3000
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost/${POSTGRES_DB}
+      - DATABASE_URL=postgresql://localusr:localpass@person_api_db:5432/person
     depends_on:
       - db

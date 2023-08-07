@@ -10,8 +10,12 @@ use crate::{
 pub fn establish_connection() -> PgConnection {
     let db_url = env::var("DATABASE_URL").expect("Env var 'DATABASE_URL' needs to be setted up");
 
-    PgConnection::establish(&db_url)
-        .unwrap_or_else(|_| panic!("Error on trying to establish db connection"))
+    let connection_result = PgConnection::establish(&db_url);
+
+    match connection_result {
+        Ok(conn) => conn,
+        Err(err) => panic!("Error on creating connection {:?}", err),
+    }
 }
 
 fn insert_address(new_address: &NewAddress) {
