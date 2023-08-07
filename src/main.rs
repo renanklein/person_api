@@ -6,6 +6,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
         .service(get_all_persons)
+        .service(create_person)
     })
     .bind(("0.0.0.0", 3000))?
     .run()
@@ -23,6 +24,8 @@ async fn get_all_persons() -> impl Responder {
 #[post("/persons")]
 async fn create_person(mut create_person: Json<CreatePerson>) -> impl Responder {
     // Insert data into db using diesel
+
+    print!("Creating new person ...");
     insert_person(&mut create_person);
     HttpResponse::Created()
 }

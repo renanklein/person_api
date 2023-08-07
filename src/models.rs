@@ -26,8 +26,7 @@ pub struct NewAddress {
     zip_code: String,
     neighborhood: Option<String>,
     complement: Option<String>,
-    number: String,
-    person_id: i32
+    number: String
 }
 
 
@@ -35,8 +34,7 @@ pub struct NewAddress {
 #[diesel(table_name = crate::schema::document)]
 pub struct NewDocument{
     doc_type: String,
-    doc_number: String,
-    person_id: i32
+    doc_number: String
 }
 
 #[derive(Queryable, Selectable,  Identifiable, Associations, Debug, PartialEq)]
@@ -87,24 +85,4 @@ impl Person {
    pub fn get_id(&self) -> i32{
        self.id
     } 
-}
-
-impl NewAddress {
-    pub fn get_person_id(&self) -> i32{
-        self.person_id
-    }
-
-    pub fn set_person_id(&mut self, new_id: &i32){
-        self.person_id = *new_id;
-    }
-}
-
-impl NewDocument {
-    pub fn get_person_id(&self) -> i32{
-        self.person_id
-    }
-
-    pub fn set_person_id(&mut self, new_id: &i32){
-        self.person_id = *new_id;
-    }
 }

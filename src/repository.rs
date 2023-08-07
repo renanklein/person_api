@@ -18,7 +18,7 @@ pub fn establish_connection() -> PgConnection {
     }
 }
 
-fn insert_address(new_address: &NewAddress) {
+fn insert_address(new_address: &NewAddress, person: &Person) {
     println!("Inserting new address {:?}",new_address);
     use crate::schema::address::dsl::*;
 
@@ -30,12 +30,14 @@ fn insert_address(new_address: &NewAddress) {
         .expect("An error occur trying to insert record");
 }
 
-fn insert_document(new_doc: &NewDocument) {
+fn insert_document(new_doc: &NewDocument, person: &Person) {
     println!("Inserting new document {:?}", new_doc);
 
     use crate::schema::document::dsl::*;
 
     let connection = &mut establish_connection();
+
+    
 
     diesel::insert_into(document)
         .values(new_doc)
@@ -54,9 +56,6 @@ pub fn insert_person(new_person: &mut CreatePerson) {
         .values(&new_person.person)
         .get_result::<Person>(connection)
         .expect("Error on inserting new person");
-
-   new_person.address.set_person_id(&inserted_record.get_id());
-   new_person.document.set_person_id(&inserted_record.get_id());
 
     insert_address(&new_person.address);
     insert_document(&new_person.document);
