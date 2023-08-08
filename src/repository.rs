@@ -1,10 +1,10 @@
 use std::env;
 
-use diesel::{Connection, PgConnection, RunQueryDsl,QueryDsl};
+use diesel::{Connection, PgConnection, RunQueryDsl, QueryDsl, BelongingToDsl, JoinOnDsl, ExpressionMethods, internal::derives::multiconnection::SelectStatementAccessor};
 
 use crate::{
-    models::{NewAddress, NewDocument, Person, CreatePerson},
-    schema::{address, document},
+    models::{Person, CreatePerson, Address, Document},
+    schema::{address, document, person},
 };
 
 pub fn establish_connection() -> PgConnection {
@@ -18,11 +18,13 @@ pub fn establish_connection() -> PgConnection {
     }
 }
 
-fn insert_address(new_address: &NewAddress, person: &Person) {
+fn insert_address(new_address: &Address) {
     println!("Inserting new address {:?}",new_address);
     use crate::schema::address::dsl::*;
 
     let connection = &mut establish_connection();
+
+    //new_address.set_person_id(inserted_person_id);
 
     diesel::insert_into(address)
         .values(new_address)
@@ -30,7 +32,7 @@ fn insert_address(new_address: &NewAddress, person: &Person) {
         .expect("An error occur trying to insert record");
 }
 
-fn insert_document(new_doc: &NewDocument, person: &Person) {
+fn insert_document(new_doc: &Document) {
     println!("Inserting new document {:?}", new_doc);
 
     use crate::schema::document::dsl::*;
@@ -57,6 +59,9 @@ pub fn insert_person(new_person: &mut CreatePerson) {
         .get_result::<Person>(connection)
         .expect("Error on inserting new person");
 
+    new_person.address.set_person_id(&inserted_record.get_id());
+    new_person.document.set_person_id(&inserted_record.get_id());
+
     insert_address(&new_person.address);
     insert_document(&new_person.document);
 }
@@ -74,4 +79,14 @@ pub fn get_persons(){
         .execute(connection);
 
     println!("Results from query {:?}", result);
+}
+
+pub fn get_person_by_id(p_id: i32) {
+    use crate::schema::person::dsl::*;
+
+    let connection = &mut establish_connection();
+
+    let selected = person.find(p_id).first::<Person>(connection);
+
+    let address = Address::belonging_to(&selected)
 }

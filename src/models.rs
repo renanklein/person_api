@@ -4,40 +4,12 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct CreatePerson {
-    pub person: NewPerson,
-    pub document: NewDocument,
-    pub address: NewAddress
+    pub person: Person,
+    pub document: Document,
+    pub address: Address
 }
 
-#[derive(Serialize, Deserialize, Insertable, Debug)]
-#[diesel(table_name = crate::schema::person)]
-pub struct NewPerson {
-    name: String,
-    age: i32
-}
-
-
-#[derive(Serialize, Deserialize,Insertable, Debug, Clone)]
-#[diesel(table_name = crate::schema::address)]
-pub struct NewAddress {
-    state: String,
-    city: String,
-    country: String,
-    zip_code: String,
-    neighborhood: Option<String>,
-    complement: Option<String>,
-    number: String
-}
-
-
-#[derive(Serialize, Deserialize, Insertable, Debug, Clone)]
-#[diesel(table_name = crate::schema::document)]
-pub struct NewDocument{
-    doc_type: String,
-    doc_number: String
-}
-
-#[derive(Queryable, Selectable,  Identifiable, Associations, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable, Selectable,  Identifiable, Associations,Insertable, Debug, PartialEq)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::address)]
 pub struct Address {
@@ -49,6 +21,7 @@ pub struct Address {
     neighborhood: String,
     complement: String,
     number: String,
+    #[serde(skip_serializing)]
     person_id: i32
 }
 
@@ -60,19 +33,20 @@ pub enum DocumentType {
 }
 
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Insertable, Debug, PartialEq)]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::document)]
 pub struct Document {
     id: i32,
     doc_type: String,
     doc_number: String,
+    #[serde(skip_serializing)]
     person_id: i32
 }
 
 
 
-#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, Insertable, PartialEq, Debug)]
 #[diesel(table_name = crate::schema::person)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Person {
@@ -85,4 +59,16 @@ impl Person {
    pub fn get_id(&self) -> i32{
        self.id
     } 
+}
+
+impl Address {
+    pub fn set_person_id(&mut self, person_id: &i32){
+        self.person_id = *person_id;
+    }
+}
+
+impl Document {
+    pub fn set_person_id(&mut self, person_id: &i32){
+        self.person_id = *person_id;
+    }
 }
