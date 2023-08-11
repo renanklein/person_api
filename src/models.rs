@@ -18,8 +18,8 @@ pub struct Address {
     city: String,
     country: String,
     zip_code: String,
-    neighborhood: String,
-    complement: String,
+    neighborhood: Option<String>,
+    complement: Option<String>,
     number: String,
     #[serde(skip_serializing)]
     person_id: i32

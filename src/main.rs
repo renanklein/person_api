@@ -17,9 +17,10 @@ async fn main() -> std::io::Result<()> {
 #[get("/persons")]
 async fn get_all_persons() -> impl Responder {
     // Get all entries from db using diesel
-    get_persons();
+    let result = get_all_persons();
     Json("brah")
 }
+
 
 #[post("/persons")]
 async fn create_person(mut create_person: Json<CreatePerson>) -> impl Responder {
