@@ -1,5 +1,5 @@
 use actix_web::{get, post, Responder, web::Json, HttpServer, App, HttpResponse};
-use person_api::{models::CreatePerson, repository::{insert_person, get_persons}};
+use person_api::{models::CreatePerson};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
