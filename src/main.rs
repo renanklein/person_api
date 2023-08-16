@@ -1,4 +1,4 @@
-use actix_web::{get, post, Responder, web::{Json, Data}, HttpServer, App, HttpResponse};
+use actix_web::{get, post, Responder, web::{Json, Data}, HttpServer, App, HttpResponse, dev::Path};
 use person_api::{models::CreatePerson, repository::Database};
 
 
