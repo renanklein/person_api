@@ -1,15 +1,15 @@
-use diesel::{Queryable, Identifiable, Associations, Selectable, Insertable};
+use diesel::{Queryable, Identifiable, Associations, Selectable, Insertable, AsChangeset};
 use serde::{Serialize, Deserialize};
 
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct CreatePerson {
+pub struct PersonCRUD {
     pub person: Person,
     pub document: Document,
     pub address: Address
 }
 
-#[derive(Serialize, Deserialize, Queryable, Selectable,  Identifiable, Associations,Insertable, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable, Selectable,  Identifiable, Associations,Insertable, Debug, PartialEq, AsChangeset)]
 #[diesel(belongs_to(Person))]
 #[diesel(primary_key(id))]
 #[diesel(table_name = crate::schema::address)]
@@ -36,7 +36,7 @@ pub enum DocumentType {
 }
 
 
-#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Insertable, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Queryable, Identifiable, Associations, Selectable, Insertable, Debug, PartialEq, AsChangeset)]
 #[diesel(primary_key(id))]
 #[diesel(belongs_to(Person))]
 #[diesel(table_name = crate::schema::document)]
@@ -52,7 +52,7 @@ pub struct Document {
 
 
 
-#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, Insertable, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, Queryable, Selectable, Identifiable, Insertable, PartialEq, Debug, AsChangeset)]
 #[diesel(primary_key(id))]
 #[diesel(table_name = crate::schema::person)]
 pub struct Person {

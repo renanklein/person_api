@@ -3,8 +3,8 @@ use std::env;
 use diesel::{ExpressionMethods, JoinOnDsl, PgConnection, QueryDsl, RunQueryDsl, r2d2::{ConnectionManager, Pool}};
 
 use crate::{
-    models::{Address, CreatePerson, Document, Person},
-    schema::{address, document},
+    models::{Address, PersonCRUD, Document, Person},
+    schema::{address, document, person},
 };
 
 type PgPool = Pool<ConnectionManager<PgConnection>>;
@@ -54,7 +54,7 @@ impl Database {
             .expect("Error on inserting documents");
     }
 
-    pub fn insert_person(&self, new_person: &mut CreatePerson) {
+    pub fn insert_person(&self, new_person: &mut PersonCRUD) {
         println!("Inserting new person {:?}", new_person);
 
         use crate::schema::person::dsl::*;
@@ -92,5 +92,47 @@ impl Database {
             .inner_join(document::table.on(document::person_id.eq(p_id)))
             .get_result::<(Person, Address, Document)>(&mut self.pool.get().unwrap())
             .unwrap()
+    }
+
+    pub fn update_person(&self, p_id: i32, updated_person: PersonCRUD){
+        println!("Updating person {}", p_id);
+
+
+        diesel::update(person::table)
+            .filter(person::id.eq(p_id))
+            .set(updated_person.person)
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();
+
+        diesel::update(address::table)
+            .filter(address::person_id.eq(p_id))
+            .set(updated_person.address)
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();
+
+        diesel::update(document::table)
+            .filter(document::person_id.eq(p_id))
+            .set(updated_person.document)
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();  
+    }
+
+    pub fn delete_person(&self, p_id: i32) {
+        println!("Deleting person {}", p_id);
+
+        diesel::delete(person::table)
+            .filter(person::id.eq(p_id))
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();
+
+        diesel::delete(address::table)
+            .filter(address::person_id.eq(p_id))
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();
+
+        diesel::delete(document::table)
+            .filter(document::person_id.eq(p_id))
+            .execute(&mut self.pool.get().unwrap())
+            .unwrap();
     }
 }

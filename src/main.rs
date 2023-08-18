@@ -1,5 +1,5 @@
-use actix_web::{get, post, Responder, web::{Json, Data}, HttpServer, App, HttpResponse, dev::Path};
-use person_api::{models::CreatePerson, repository::Database};
+use actix_web::{get, post, Responder, web::{Json, Data, Path}, HttpServer, App, HttpResponse, put, delete};
+use person_api::{models::PersonCRUD, repository::Database};
 
 
 #[actix_web::main]
@@ -11,6 +11,9 @@ async fn main() -> std::io::Result<()> {
         .app_data(app_data.clone())
         .service(get_all_persons)
         .service(create_person)
+        .service(get_persons_by_id)
+        .service(update_person)
+        .service(delete_person)
     })
     .bind(("0.0.0.0", 3000))?
     .run()
@@ -25,9 +28,15 @@ async fn get_all_persons(db: Data<Database>) -> impl Responder {
     Json(result)
 }
 
+#[get("/persons/{id}")]
+async fn get_persons_by_id(id_path: Path<i32>, db: Data<Database>) -> impl Responder {
+    let result = db.get_person_by_id(id_path.into_inner());
+
+    Json(result)
+}
 
 #[post("/persons")]
-async fn create_person(mut create_person: Json<CreatePerson>, db: Data<Database>) -> impl Responder {
+async fn create_person(mut create_person: Json<PersonCRUD>, db: Data<Database>) -> impl Responder {
     // Insert data into db using diesel
 
     print!("Creating new person ...");
@@ -35,3 +44,15 @@ async fn create_person(mut create_person: Json<CreatePerson>, db: Data<Database>
     HttpResponse::Created()
 }
 
+#[put("/persons/{id}")]
+async fn update_person(update_person: Json<PersonCRUD>, db: Data<Database>, p_id: Path<i32>) -> impl Responder {
+    db.update_person(p_id.into_inner(), update_person.into_inner());
+    HttpResponse::Ok()
+}
+
+#[delete("/person/{id}")]
+async fn delete_person(p_id: Path<i32>, db: Data<Database>) -> impl Responder{
+    db.delete_person(p_id.into_inner());
+
+    HttpResponse::Ok()
+}
