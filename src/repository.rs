@@ -124,15 +124,5 @@ impl Database {
             .filter(person::id.eq(p_id))
             .execute(&mut self.pool.get().unwrap())
             .unwrap();
-
-        diesel::delete(address::table)
-            .filter(address::person_id.eq(p_id))
-            .execute(&mut self.pool.get().unwrap())
-            .unwrap();
-
-        diesel::delete(document::table)
-            .filter(document::person_id.eq(p_id))
-            .execute(&mut self.pool.get().unwrap())
-            .unwrap();
     }
 }

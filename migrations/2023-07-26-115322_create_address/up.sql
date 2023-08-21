@@ -9,5 +9,5 @@ CREATE TABLE "address"(
     complement VARCHAR DEFAULT NULL,
     number VARCHAR NOT NULL,
     person_id INTEGER NOT NULL,
-    CONSTRAINT fk_address_person FOREIGN KEY(person_id) REFERENCES person(id)
+    CONSTRAINT fk_address_person FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE CASCADE
 )

@@ -38,8 +38,8 @@ async fn get_persons_by_id(id_path: Path<i32>, db: Data<Database>) -> impl Respo
 #[post("/persons")]
 async fn create_person(mut create_person: Json<PersonCRUD>, db: Data<Database>) -> impl Responder {
     // Insert data into db using diesel
-
     print!("Creating new person ...");
+    
     db.insert_person(&mut create_person); 
     HttpResponse::Created()
 }
@@ -47,10 +47,11 @@ async fn create_person(mut create_person: Json<PersonCRUD>, db: Data<Database>) 
 #[put("/persons/{id}")]
 async fn update_person(update_person: Json<PersonCRUD>, db: Data<Database>, p_id: Path<i32>) -> impl Responder {
     db.update_person(p_id.into_inner(), update_person.into_inner());
+
     HttpResponse::Ok()
 }
 
-#[delete("/person/{id}")]
+#[delete("/persons/{id}")]
 async fn delete_person(p_id: Path<i32>, db: Data<Database>) -> impl Responder{
     db.delete_person(p_id.into_inner());
 

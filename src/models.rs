@@ -25,7 +25,8 @@ pub struct Address {
     complement: Option<String>,
     number: String,
     #[serde(skip_deserializing)]
-    person_id: i32
+    #[diesel(deserialize_as = i32)]
+    person_id: Option<i32>
 }
 
 
@@ -47,7 +48,8 @@ pub struct Document {
     doc_type: String,
     doc_number: String,
     #[serde(skip_deserializing)]
-    person_id: i32
+    #[diesel(deserialize_as = i32)]
+    person_id: Option<i32>
 }
 
 
@@ -71,12 +73,12 @@ impl Person {
 
 impl Address {
     pub fn set_person_id(&mut self, person_id: &i32){
-        self.person_id = *person_id;
+        self.person_id = Some(*person_id);
     }
 }
 
 impl Document {
     pub fn set_person_id(&mut self, person_id: &i32){
-        self.person_id = *person_id;
+        self.person_id = Some(*person_id);
     }
 }
