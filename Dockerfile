@@ -1,6 +1,6 @@
 # Builder phase
 
-FROM rust:latest AS builder
+FROM rust:1.75.0 AS builder
 RUN USER=root cargo new --bin person_api
 WORKDIR ./person_api
 COPY ./Cargo.toml ./Cargo.toml
@@ -14,7 +14,7 @@ RUN cargo build --release
 
 # Release phase
 
-FROM debian:buster-slim
+FROM debian:trixie-slim
 
 ARG APP=/usr/src/app
 
